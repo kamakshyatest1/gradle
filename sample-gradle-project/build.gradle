@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+}
+
+// Extract version from gradle-wrapper.properties
+def getGradleVersion() {
+    def gradlePropertiesFile = file('gradle/wrapper/gradle-wrapper.properties')
+    def gradleProperties = new Properties()
+    gradleProperties.load(new FileInputStream(gradlePropertiesFile))
+    
+    // Extract the Gradle version from the distributionUrl property
+    def distributionUrl = gradleProperties.getProperty('distributionUrl')
+    def matcher = distributionUrl =~ /gradle-(.*?)-bin.zip/
+    return matcher ? matcher[0][1] : 'unknown'
+}
+
+version = getGradleVersion()
+
+task printVersion {
+    doLast {
+        println "Project version derived from Gradle Wrapper: ${version}"
+    }
+}
